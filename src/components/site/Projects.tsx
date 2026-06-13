@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Github, Wrench, CheckCircle2, Clock } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowUpRight, Github } from "lucide-react";
 
 export type ProjectItem = {
   id: string;
@@ -17,137 +16,121 @@ export type ProjectItem = {
   featured: boolean;
 };
 
-const STATUS_META: Record<
-  string,
-  { label: string; icon: typeof CheckCircle2; color: string }
-> = {
-  completed: { label: "Completed", icon: CheckCircle2, color: "var(--color-accent-2)" },
-  "in-progress": { label: "In progress", icon: Wrench, color: "var(--color-accent)" },
-  planned: { label: "Planned", icon: Clock, color: "#f5a623" },
+const STATUS_LABEL: Record<string, string> = {
+  completed: "Shipped",
+  "in-progress": "In progress",
+  planned: "Planned",
 };
 
 export function Projects({ projects }: { projects: ProjectItem[] }) {
-  const filters = useMemo(() => {
-    const set = new Set<string>();
-    projects.forEach((p) => p.tags.forEach((t) => set.add(t)));
-    return ["All", ...Array.from(set).slice(0, 12)];
-  }, [projects]);
-
-  const [active, setActive] = useState("All");
-
-  const filtered =
-    active === "All"
-      ? projects
-      : projects.filter((p) => p.tags.includes(active));
+  const featured = projects.filter((p) => p.featured);
+  const rest = featured.length ? projects.filter((p) => !p.featured) : projects;
 
   return (
-    <section id="projects" className="max-w-5xl mx-auto px-6 py-24 scroll-mt-20">
-      <SectionHeading
-        eyebrow="Selected work"
-        title="Things I've built"
-        subtitle="A mix of shipped products and experiments I'm actively working on."
-      />
+    <section id="work" className="container-x py-20 sm:py-28 scroll-mt-16">
+      <SectionHeading no="01" label="Selected work" title="Things I've built" />
 
-      {filters.length > 1 && (
-        <div className="mt-8 flex flex-wrap gap-2">
-          {filters.map((f) => (
-            <button
-              key={f}
-              onClick={() => setActive(f)}
-              className={`px-3.5 py-1.5 rounded-full text-sm transition-colors border ${
-                active === f
-                  ? "bg-[var(--color-accent)] text-white border-transparent"
-                  : "glass text-[var(--color-muted)] hover:text-[var(--color-text)]"
-              }`}
-            >
-              {f}
-            </button>
+      {projects.length === 0 && (
+        <p className="mt-12 text-[var(--color-muted)]">
+          No projects yet — add some from the admin dashboard.
+        </p>
+      )}
+
+      {featured.length > 0 && (
+        <div className="mt-14 flex flex-col gap-16 sm:gap-24">
+          {featured.map((p, i) => (
+            <FeatureBlock key={p.id} project={p} flip={i % 2 === 1} />
           ))}
         </div>
       )}
 
-      <motion.div layout className="mt-10 grid gap-6 sm:grid-cols-2">
-        <AnimatePresence mode="popLayout">
-          {filtered.map((p) => (
-            <ProjectCard key={p.id} project={p} />
-          ))}
-        </AnimatePresence>
-      </motion.div>
-
-      {filtered.length === 0 && (
-        <p className="mt-12 text-center text-[var(--color-muted)]">
-          No projects yet. Add some from the admin dashboard.
-        </p>
+      {rest.length > 0 && (
+        <div className="mt-20">
+          {featured.length > 0 && (
+            <h3 className="eyebrow mb-2">More work</h3>
+          )}
+          <ul>
+            {rest.map((p, i) => (
+              <IndexRow key={p.id} project={p} index={i + 1} />
+            ))}
+          </ul>
+        </div>
       )}
     </section>
   );
 }
 
-function ProjectCard({ project }: { project: ProjectItem }) {
-  const status = STATUS_META[project.status] ?? STATUS_META.completed;
-  const StatusIcon = status.icon;
-
+function FeatureBlock({
+  project,
+  flip,
+}: {
+  project: ProjectItem;
+  flip: boolean;
+}) {
+  const href = project.liveUrl || project.repoUrl || undefined;
   return (
     <motion.article
-      layout
-      initial={{ opacity: 0, scale: 0.96 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.96 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative flex flex-col rounded-2xl glass overflow-hidden card-hover"
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-90px" }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className="grid md:grid-cols-2 gap-7 md:gap-12 items-center"
     >
-      <div className="relative aspect-[16/10] overflow-hidden bg-[var(--color-bg-soft)]">
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        className={`group relative block aspect-[4/3] overflow-hidden border border-[var(--color-border)] ${
+          flip ? "md:order-2" : ""
+        }`}
+      >
         {project.coverImage ? (
           <Image
             src={project.coverImage}
             alt={project.title}
             fill
-            sizes="(max-width: 640px) 100vw, 50vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           />
         ) : (
-          <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-accent-2)]/10">
-            <span className="text-4xl font-bold gradient-text">
+          <div className="absolute inset-0 grid place-items-center bg-[var(--color-bg-soft)]">
+            <span className="serif text-6xl text-[var(--color-faint)]">
               {project.title.charAt(0)}
             </span>
           </div>
         )}
-        <span
-          className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium glass"
-          style={{ color: status.color }}
-        >
-          <StatusIcon size={13} /> {status.label}
-        </span>
-      </div>
+      </a>
 
-      <div className="flex flex-col flex-1 p-5">
-        <h3 className="text-lg font-semibold">{project.title}</h3>
-        <p className="mt-1.5 text-sm text-[var(--color-muted)] line-clamp-2">
+      <div className={flip ? "md:order-1" : ""}>
+        <div className="flex items-center gap-3 font-mono text-xs text-[var(--color-muted)]">
+          <span className="text-[var(--color-accent)]">
+            {STATUS_LABEL[project.status] ?? project.status}
+          </span>
+        </div>
+        <h3 className="serif text-3xl sm:text-4xl mt-3 tracking-tight">
+          {project.title}
+        </h3>
+        <p className="mt-4 text-[var(--color-muted)] leading-relaxed max-w-md">
           {project.summary}
         </p>
 
         {project.tags.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {project.tags.slice(0, 4).map((t) => (
-              <span
-                key={t}
-                className="rounded-md bg-[var(--color-bg-soft)] px-2 py-0.5 text-[11px] text-[var(--color-muted)]"
-              >
-                {t}
-              </span>
+          <div className="mt-5 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-xs text-[var(--color-faint)]">
+            {project.tags.map((t) => (
+              <span key={t}>{t}</span>
             ))}
           </div>
         )}
 
-        <div className="mt-auto pt-4 flex items-center gap-3 text-sm">
+        <div className="mt-7 flex items-center gap-5 text-sm">
           {project.liveUrl && (
             <a
               href={project.liveUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 font-medium hover:text-[var(--color-accent)] transition-colors"
+              className="inline-flex items-center gap-1.5 link-underline"
             >
-              Live <ArrowUpRight size={15} />
+              Visit live <ArrowUpRight size={15} />
             </a>
           )}
           {project.repoUrl && (
@@ -155,9 +138,9 @@ function ProjectCard({ project }: { project: ProjectItem }) {
               href={project.repoUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors"
+              className="inline-flex items-center gap-1.5 text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors"
             >
-              <Github size={15} /> Code
+              <Github size={15} /> Source
             </a>
           )}
         </div>
@@ -166,28 +149,70 @@ function ProjectCard({ project }: { project: ProjectItem }) {
   );
 }
 
+function IndexRow({
+  project,
+  index,
+}: {
+  project: ProjectItem;
+  index: number;
+}) {
+  const href = project.liveUrl || project.repoUrl || undefined;
+  return (
+    <li>
+      <a
+        href={href}
+        target={href ? "_blank" : undefined}
+        rel="noreferrer"
+        className="group flex items-center gap-4 sm:gap-6 py-5 border-t border-[var(--color-border)] transition-[padding] duration-300 hover:pl-2"
+      >
+        <span className="font-mono text-xs text-[var(--color-faint)] w-7 shrink-0">
+          {String(index).padStart(2, "0")}
+        </span>
+        <span className="serif text-xl sm:text-2xl group-hover:text-[var(--color-accent)] transition-colors">
+          {project.title}
+        </span>
+        <span className="hidden sm:flex ml-auto items-center gap-x-4 font-mono text-xs text-[var(--color-faint)]">
+          {project.tags.slice(0, 3).map((t) => (
+            <span key={t}>{t}</span>
+          ))}
+        </span>
+        <ArrowUpRight
+          size={18}
+          className="sm:ml-0 ml-auto text-[var(--color-muted)] group-hover:text-[var(--color-accent)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform shrink-0"
+        />
+      </a>
+    </li>
+  );
+}
+
 export function SectionHeading({
-  eyebrow,
+  no,
+  label,
   title,
   subtitle,
 }: {
-  eyebrow: string;
+  no: string;
+  label: string;
   title: string;
   subtitle?: string;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6 }}
     >
-      <span className="text-sm font-medium uppercase tracking-wider gradient-text">
-        {eyebrow}
-      </span>
-      <h2 className="mt-2 text-3xl sm:text-4xl font-bold tracking-tight">{title}</h2>
+      <div className="flex items-center gap-3">
+        <span className="font-mono text-xs text-[var(--color-accent)]">
+          ({no})
+        </span>
+        <span className="eyebrow">{label}</span>
+        <span className="rule flex-1" />
+      </div>
+      <h2 className="serif text-4xl sm:text-5xl tracking-tight mt-6">{title}</h2>
       {subtitle && (
-        <p className="mt-3 max-w-2xl text-[var(--color-muted)]">{subtitle}</p>
+        <p className="mt-4 max-w-2xl text-[var(--color-muted)]">{subtitle}</p>
       )}
     </motion.div>
   );

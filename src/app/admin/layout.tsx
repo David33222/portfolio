@@ -14,7 +14,6 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen">
-      <div className="aurora" />
       <header className="sticky top-0 z-40 glass border-b border-[var(--color-border)]">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">

@@ -1,16 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #07070b;
-  --color-bg-soft: #0d0d15;
-  --color-surface: #12121d;
-  --color-border: #23233a;
-  --color-text: #e9e9f2;
-  --color-muted: #9595ad;
-  --color-accent: #7c5cff;
-  --color-accent-2: #18e0c8;
+  /* Warm ink-and-paper palette — one confident accent, no two-tone gradients */
+  --color-bg: #0e0d0b;
+  --color-bg-soft: #15130f;
+  --color-surface: #1a1714;
+  --color-border: #2a2521;
+  --color-text: #ece6db;
+  --color-muted: #988f82;
+  --color-faint: #6b6358;
+  --color-accent: #ff5b2e;
+  --color-accent-soft: #ffb39a;
+  /* kept for the admin UI's existing gradient accents */
+  --color-accent-2: #ffa94d;
 
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", "Segoe UI Mono", Consolas, "Liberation Mono", monospace;
 }
 
 :root {
@@ -31,101 +37,98 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* faint film-grain texture for a printed, human feel */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
-/* Ambient animated background blobs */
-.aurora {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-.aurora::before,
-.aurora::after {
-  content: "";
-  position: absolute;
-  width: 45rem;
-  height: 45rem;
-  border-radius: 9999px;
-  filter: blur(120px);
-  opacity: 0.35;
-}
-.aurora::before {
-  background: radial-gradient(circle, var(--color-accent), transparent 60%);
-  top: -15rem;
-  left: -10rem;
-  animation: float1 18s ease-in-out infinite;
-}
-.aurora::after {
-  background: radial-gradient(circle, var(--color-accent-2), transparent 60%);
-  bottom: -15rem;
-  right: -10rem;
-  animation: float2 22s ease-in-out infinite;
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
-@keyframes float1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(6rem, 4rem) scale(1.15); }
-}
-@keyframes float2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-5rem, -3rem) scale(1.1); }
-}
-
-/* Subtle grain / grid overlay */
-.grid-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent 80%);
-  pointer-events: none;
+/* ---------- Layout ---------- */
+.container-x {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 4rem);
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* mono section label, e.g. "01 — Selected work" */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
 }
 
+.serif {
+  font-family: var(--font-display);
+}
+
+.rule {
+  height: 1px;
+  width: 100%;
+  background: var(--color-border);
+}
+
+.link-underline {
+  background-image: linear-gradient(var(--color-accent), var(--color-accent));
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.link-underline:hover {
+  background-size: 100% 1px;
+}
+
+/* subtle surface (replaces heavy glassmorphism) */
+.surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
 .glass {
-  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
-  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--color-border);
 }
 
-.card-hover {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
+.hover-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s;
 }
-.card-hover:hover {
-  transform: translateY(-6px);
-  border-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
-  box-shadow: 0 20px 50px -20px color-mix(in srgb, var(--color-accent) 50%, transparent);
+.hover-lift:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--color-accent) 50%, var(--color-border));
 }
 
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: var(--color-bg); }
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 9999px;
+.gradient-text {
+  color: var(--color-accent);
 }
-::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+::-webkit-scrollbar { width: 9px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-faint); }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
 
-/* Form controls (admin) */
+/* ---------- Form controls (admin) ---------- */
 .field {
   width: 100%;
   background: var(--color-bg-soft);
   border: 1px solid var(--color-border);
-  border-radius: 0.6rem;
+  border-radius: 0.5rem;
   padding: 0.625rem 0.85rem;
   color: var(--color-text);
   font-size: 0.9rem;
@@ -134,37 +137,37 @@ body {
 .field:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 25%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent);
 }
-.field::placeholder { color: var(--color-muted); }
+.field::placeholder { color: var(--color-faint); }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.6rem;
-  padding: 0.625rem 1.1rem;
-  font-size: 0.9rem;
+  border-radius: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s, opacity 0.2s, background 0.2s;
+  transition: transform 0.15s, background 0.2s, border-color 0.2s, color 0.2s;
 }
-.btn:active { transform: scale(0.97); }
+.btn:active { transform: scale(0.98); }
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-accent), color-mix(in srgb, var(--color-accent-2) 70%, var(--color-accent)));
-  color: white;
+  background: var(--color-accent);
+  color: #1a0f08;
 }
-.btn-primary:hover { opacity: 0.92; }
+.btn-primary:hover { background: color-mix(in srgb, var(--color-accent) 88%, white); }
 .btn-ghost {
-  background: var(--color-surface);
+  background: transparent;
   border: 1px solid var(--color-border);
   color: var(--color-text);
 }
-.btn-ghost:hover { border-color: var(--color-accent); }
+.btn-ghost:hover { border-color: var(--color-accent); color: var(--color-accent); }
 .btn-danger {
-  background: color-mix(in srgb, #ef4444 20%, transparent);
-  border: 1px solid color-mix(in srgb, #ef4444 50%, transparent);
+  background: color-mix(in srgb, #ef4444 16%, transparent);
+  border: 1px solid color-mix(in srgb, #ef4444 45%, transparent);
   color: #fca5a5;
 }
-.btn-danger:hover { background: color-mix(in srgb, #ef4444 35%, transparent); }
+.btn-danger:hover { background: color-mix(in srgb, #ef4444 30%, transparent); }

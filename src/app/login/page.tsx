@@ -12,7 +12,6 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen grid place-items-center px-6">
-      <div className="aurora" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

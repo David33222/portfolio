@@ -40,9 +40,6 @@ export default async function Home() {
 
   return (
     <>
-      <div className="aurora" />
-      <div className="grid-overlay" />
-
       <Navbar name={profile.name} />
 
       <main>
