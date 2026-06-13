@@ -1,0 +1,75 @@
+// Portfolio database schema.
+//
+// LOCAL: uses SQLite (file:./dev.db) so it runs on your machine immediately.
+// VERCEL: switch `provider` to "postgresql" and set DATABASE_URL to a Neon /
+//         Vercel Postgres connection string. No other changes needed — the
+//         schema avoids DB-specific features (tags are stored as JSON strings).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// The one admin account (you). Email + password login.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// Singleton profile / "about me" content shown across the site.
+model Profile {
+  id        String   @id @default("profile")
+  name      String   @default("Your Name")
+  headline  String   @default("Building things for the web")
+  bio       String   @default("")
+  location  String   @default("")
+  email     String   @default("")
+  avatarUrl String   @default("")
+  resumeUrl String   @default("")
+  available Boolean  @default(true) // "open to work" badge
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  summary         String   @default("") // short one-liner for cards
+  description     String   @default("") // long markdown-ish description
+  coverImage      String   @default("")
+  tags            String   @default("[]") // JSON array of strings
+  liveUrl         String   @default("")
+  repoUrl         String   @default("")
+  status          String   @default("completed") // "completed" | "in-progress" | "planned"
+  featured        Boolean  @default(false)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  name      String
+  category  String   @default("Other") // e.g. Frontend, Backend, Tools, Design
+  level     Int      @default(80) // 0-100 proficiency
+  icon      String   @default("") // optional icon name / emoji / url
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String // e.g. GitHub, LinkedIn, Twitter, Email, Website
+  url       String
+  handle    String   @default("")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
