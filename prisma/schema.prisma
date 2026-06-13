@@ -1,16 +1,15 @@
 // Portfolio database schema.
 //
-// LOCAL: uses SQLite (file:./dev.db) so it runs on your machine immediately.
-// VERCEL: switch `provider` to "postgresql" and set DATABASE_URL to a Neon /
-//         Vercel Postgres connection string. No other changes needed — the
-//         schema avoids DB-specific features (tags are stored as JSON strings).
+// Uses PostgreSQL (Supabase) for both local dev and production, via the
+// DATABASE_URL connection string in .env / Vercel env vars. Tags are stored as
+// JSON strings to keep the schema portable.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

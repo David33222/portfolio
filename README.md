@@ -1,99 +1,67 @@
 # David's Portfolio
 
-A modern, animated portfolio with a **private admin dashboard** where you (and only you) can manage everything that appears on the site — projects, skills, social links, profile, and image uploads — without touching code.
+A modern, editorial portfolio with a **private admin dashboard** where you (and only you) manage everything on the site — projects, skills, social links, profile, and image uploads — without touching code.
 
-Built with **Next.js 15**, **TypeScript**, **Tailwind CSS v4**, **Framer Motion**, **Prisma**, and **Auth.js**.
+Built with **Next.js 15**, **TypeScript**, **Tailwind CSS v4**, **Framer Motion**, **Prisma**, **Auth.js**, and **PostgreSQL (Supabase)**.
 
 ---
 
 ## ✨ Features
 
-- **Animated public site** — hero, about, filterable projects, skills bars, contact, dark glassy UI.
-- **Private admin** (`/admin`) — email + password login, only you can access it.
-- **Edit everything live**: profile/bio/photo, projects (with status: completed / in‑progress / planned), skills, and social links.
-- **Image uploads** — drag a file in the admin; stored in cloud (Vercel Blob) in production, or locally during development.
-- **No code edits needed** to update your portfolio — just log in.
+- **Editorial, fully responsive UI** — serif display type, monospace labels, a single warm accent, mobile menu, reduced-motion support.
+- **Private admin** (`/admin`) — email + password login; only you can access it.
+- **Edit everything live**: profile/bio/photo, projects (status: completed / in‑progress / planned), skills, social links.
+- **Image uploads** — to Vercel Blob in production, or to `/public/uploads` locally.
+- No code edits needed to update your portfolio — just log in.
 
 ---
 
-## 🚀 Run it locally
+## 🚀 Run locally
+
+Requires a PostgreSQL database (e.g. a free Supabase project). Then:
 
 ```bash
 npm install
-npm run db:push      # create the local SQLite database
-npm run db:seed      # create your admin account + sample content
+# .env must contain DATABASE_URL (Supabase Session pooler), AUTH_SECRET, ADMIN_*
+npm run db:push     # create the tables
+npm run db:seed     # create your admin account + content
 npm run dev
 ```
 
-Open **http://localhost:3000**. Admin is at **http://localhost:3000/admin**.
+Open **http://localhost:3000** (it auto-picks 3001/3002… if 3000 is busy — watch the terminal).
+Admin is at **/admin**.
 
-**Your login** (from `.env`):
-- Email: `boluwatifeadeleye383@gmail.com`
-- Password: `ChangeMe!2026`  ← **change this** in `.env` then re-run `npm run db:seed`.
+**Login** comes from your `.env` (`ADMIN_EMAIL` / `ADMIN_PASSWORD`). Change `ADMIN_PASSWORD` and re-run `npm run db:seed` to update it.
 
-> The `.env` file is created for you and git-ignored. Use `.env.example` as the reference.
+> See `.env.example` for all required variables. Real secrets go only in `.env` (git-ignored) — never in `.env.example`.
 
 ---
 
-## ☁️ Deploy to Vercel + GitHub
+## ☁️ Deploy to Vercel
 
-The local setup uses SQLite. Vercel's servers are stateless, so for production you need a hosted **Postgres** database (free) and a **Blob** store for uploads. Steps:
+The same Postgres database is used locally and in production, so there's nothing to migrate.
 
-### 1. Push to GitHub
-
-```bash
-git init
-git add .
-git commit -m "Initial portfolio"
-git branch -M main
-git remote add origin https://github.com/David33222/portfolio.git
-git push -u origin main
-```
-
-(Create the empty `portfolio` repo first at https://github.com/new.)
-
-### 2. Switch the database to Postgres
-
-In [`prisma/schema.prisma`](prisma/schema.prisma), change the datasource provider:
-
-```prisma
-datasource db {
-  provider = "postgresql"   // was "sqlite"
-  url      = env("DATABASE_URL")
-}
-```
-
-Commit and push that change.
-
-### 3. Import the project on Vercel
-
-1. Go to **https://vercel.com/new** and import your `portfolio` GitHub repo.
-2. Before deploying, add a **Postgres** database: in the Vercel project → **Storage → Create → Neon/Postgres**. Vercel auto-adds `DATABASE_URL`.
-3. Add a **Blob** store: **Storage → Create → Blob**. Vercel auto-adds `BLOB_READ_WRITE_TOKEN`.
-4. Add the remaining **Environment Variables** (Project → Settings → Environment Variables):
+1. **Push to GitHub** (this repo is already wired to `github.com/David33222/portfolio`):
+   ```bash
+   git push -u origin main
+   ```
+2. **Import on Vercel** — https://vercel.com/new → pick the `portfolio` repo.
+3. **Create a PUBLIC Blob store** — Vercel project → **Storage → Create → Blob**. It adds `BLOB_READ_WRITE_TOKEN` automatically. (Public so visitors can see uploaded images.)
+4. **Add Environment Variables** (Project → Settings → Environment Variables):
 
    | Name | Value |
    |------|-------|
-   | `AUTH_SECRET` | run `npx auth secret` (or any long random string) |
-   | `ADMIN_EMAIL` | `boluwatifeadeleye383@gmail.com` |
-   | `ADMIN_PASSWORD` | your strong password |
-   | `ADMIN_NAME` | `David` |
+   | `DATABASE_URL` | your Supabase **Session pooler** string (port 5432, `?sslmode=require`) |
+   | `AUTH_SECRET` | run `npx auth secret` |
+   | `ADMIN_EMAIL` | your email |
+   | `ADMIN_PASSWORD` | your password |
+   | `ADMIN_NAME` | your name |
 
-5. **Deploy.**
+5. **Deploy.** The build runs `prisma generate` automatically. The database tables already exist (created via `db:push`), so the site comes up populated.
 
-### 4. Initialize the production database (one time)
+Every future `git push` to `main` auto-deploys.
 
-After the first deploy, create the tables and your admin account against the production DB. Easiest way — locally, pointing at the production URL:
-
-```bash
-# paste your Vercel Postgres URL + the same admin vars into a temp shell
-DATABASE_URL="postgres://..." npx prisma db push
-DATABASE_URL="postgres://..." ADMIN_EMAIL="boluwatifeadeleye383@gmail.com" ADMIN_PASSWORD="your-pass" ADMIN_NAME="David" npm run db:seed
-```
-
-That's it — your portfolio is live, and `/admin` lets you manage it from anywhere.
-
-> Every future `git push` to `main` auto-deploys.
+> **Uploads:** images uploaded before you set up the public Blob store were saved locally and won't appear in production — just re-upload them from `/admin` once deployed.
 
 ---
 
@@ -109,7 +77,7 @@ src/
       auth/[...nextauth]/  # Auth.js routes
       upload/              # image upload endpoint (auth-protected)
   components/
-    site/                # public UI (Hero, Projects, Skills, Contact…)
+    site/                # public UI (Hero, Projects, Skills, About, Contact…)
     admin/               # dashboard UI (managers, forms, image upload)
     ui/                  # shared bits (Reveal, SocialIcon)
   lib/
@@ -118,22 +86,16 @@ src/
     storage.ts           # upload (Vercel Blob + local fallback)
     data.ts              # data fetch helpers
 prisma/
-  schema.prisma          # database models
-  seed.ts                # admin account + sample data
+  schema.prisma          # database models (PostgreSQL)
+  seed.ts                # admin account + content
 ```
 
-## 🔧 Handy commands
+## 🔧 Commands
 
 | Command | What it does |
 |---------|--------------|
 | `npm run dev` | Start the dev server |
 | `npm run build` | Production build |
 | `npm run db:push` | Sync schema to the database |
-| `npm run db:seed` | Create admin + sample content |
+| `npm run db:seed` | Create admin + content |
 | `npm run db:studio` | Visual database browser |
-
----
-
-## 🔐 Changing your password
-
-Update `ADMIN_PASSWORD` in `.env` (local) or Vercel env vars (prod), then re-run the seed (`npm run db:seed`) — it updates the existing account's password.

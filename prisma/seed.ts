@@ -24,8 +24,8 @@ async function main() {
     create: {
       id: "profile",
       name: name,
-      headline: "Full-Stack Developer & Creative Technologist",
-      bio: "I design and build modern web experiences — from sleek front-ends to robust back-ends. Welcome to my corner of the internet, where I showcase the things I've built and the things I'm building next.",
+      headline: "Full-Stack Developer & AI Builder",
+      bio: "I'm a full-stack developer who ships complete websites and apps end-to-end — building fast with Supabase, Vercel and Google Antigravity. I design workflow automations in n8n, have a foundation in cybersecurity (and I'm always learning more), and I'm currently building Ecom AI, an AI agent for e-commerce.",
       location: "Nigeria",
       email: email,
       available: true,
@@ -52,13 +52,18 @@ async function main() {
   if (skillCount === 0) {
     await prisma.skill.createMany({
       data: [
-        { name: "TypeScript", category: "Frontend", level: 90, order: 0 },
-        { name: "React / Next.js", category: "Frontend", level: 92, order: 1 },
-        { name: "Tailwind CSS", category: "Frontend", level: 88, order: 2 },
-        { name: "Node.js", category: "Backend", level: 85, order: 3 },
-        { name: "Prisma / SQL", category: "Backend", level: 80, order: 4 },
-        { name: "UI / UX Design", category: "Design", level: 78, order: 5 },
-        { name: "Git & GitHub", category: "Tools", level: 88, order: 6 },
+        { name: "Full-Stack Development", category: "Frontend", level: 88, order: 0 },
+        { name: "TypeScript", category: "Frontend", level: 90, order: 1 },
+        { name: "React / Next.js", category: "Frontend", level: 90, order: 2 },
+        { name: "Tailwind CSS", category: "Frontend", level: 88, order: 3 },
+        { name: "Node.js", category: "Backend", level: 85, order: 4 },
+        { name: "Supabase", category: "Backend", level: 85, order: 5 },
+        { name: "Vercel", category: "Tools", level: 88, order: 6 },
+        { name: "n8n Automation", category: "Tools", level: 82, order: 7 },
+        { name: "Git & GitHub", category: "Tools", level: 86, order: 8 },
+        { name: "AI Agents", category: "AI", level: 80, order: 9 },
+        { name: "Google Antigravity", category: "AI", level: 78, order: 10 },
+        { name: "Cybersecurity", category: "Security", level: 65, order: 11 },
       ],
     });
     console.log("✓ Sample skills added");
@@ -82,15 +87,29 @@ async function main() {
           order: 0,
         },
         {
-          title: "Sample Project",
-          slug: "sample-project",
-          summary: "Replace me from the admin dashboard.",
+          title: "Artvera",
+          slug: "artvera",
+          summary:
+            "An art marketplace where people can browse and buy artwork online, with secure Paystack checkout.",
           description:
-            "This is a placeholder project. Log into /admin to edit it, upload a cover image, add tags and links, or delete it entirely.",
-          tags: JSON.stringify(["Demo", "Edit me"]),
+            "Artvera is an e-commerce platform for art. Visitors can explore artworks and purchase them through an integrated Paystack payment flow. Built as a fast single-page app with React + Vite and deployed on Vercel.",
+          tags: JSON.stringify(["React", "Vite", "Paystack", "E-commerce", "Vercel"]),
+          liveUrl: "https://new-art-two.vercel.app/",
           status: "completed",
           featured: true,
           order: 1,
+        },
+        {
+          title: "Ecom AI",
+          slug: "ecom-ai",
+          summary:
+            "An AI agent for e-commerce — automating store workflows and customer interactions.",
+          description:
+            "Ecom AI is an AI agent I'm building for e-commerce: it automates store operations and customer-facing workflows, combining LLM reasoning with tools like n8n and Supabase. Currently in active development.",
+          tags: JSON.stringify(["AI Agent", "n8n", "Supabase", "Automation"]),
+          status: "in-progress",
+          featured: true,
+          order: -2,
         },
       ],
     });
