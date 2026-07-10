@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { SectionHeading } from "@/components/site/Projects";
+import { SkillLogo } from "@/components/ui/SkillLogo";
 
 export type SkillItem = {
   id: string;
@@ -27,7 +28,7 @@ export function Skills({ skills }: { skills: SkillItem[] }) {
           No skills yet — add some from the admin dashboard.
         </p>
       ) : (
-        <div className="mt-14 grid gap-x-12 gap-y-10 sm:grid-cols-2">
+        <div className="mt-14 grid gap-x-12 gap-y-12 sm:grid-cols-2">
           {entries.map(([category, items], gi) => (
             <motion.div
               key={category}
@@ -40,19 +41,24 @@ export function Skills({ skills }: { skills: SkillItem[] }) {
               <h3 className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--color-muted)]">
                 {category}
               </h3>
-              <ul className="mt-4 flex flex-col">
+              <div className="mt-6 flex flex-wrap gap-x-7 gap-y-9 pb-2">
                 {items.map((s) => (
-                  <li
+                  <div
                     key={s.id}
-                    className="flex items-baseline gap-3 py-2 text-lg"
+                    title={s.name}
+                    aria-label={s.name}
+                    className="group relative flex items-center justify-center"
                   >
-                    <span className="text-[var(--color-accent)] text-xs">
-                      ◆
+                    <SkillLogo
+                      name={s.name}
+                      className="w-8 h-8 sm:w-9 sm:h-9 text-[var(--color-muted)] group-hover:text-[var(--color-accent)] group-hover:-translate-y-0.5 transition-all duration-300"
+                    />
+                    <span className="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[11px] text-[var(--color-muted)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {s.name}
                     </span>
-                    {s.name}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </motion.div>
           ))}
         </div>
