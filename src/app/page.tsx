@@ -49,6 +49,7 @@ export default async function Home() {
           location={profile.location}
           available={profile.available}
           resumeUrl={profile.resumeUrl}
+          avatarUrl={profile.avatarUrl}
           socials={socials.map((s) => ({
             id: s.id,
             platform: s.platform,
@@ -56,12 +57,7 @@ export default async function Home() {
           }))}
         />
 
-        <About
-          name={profile.name}
-          bio={profile.bio}
-          avatarUrl={profile.avatarUrl}
-          stats={stats}
-        />
+        <About bio={profile.bio} stats={stats} />
 
         <Projects projects={projectItems} />
 

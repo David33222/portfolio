@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowDownRight } from "lucide-react";
 import { SocialIcon } from "@/components/ui/SocialIcon";
@@ -15,6 +16,7 @@ export function Hero({
   available,
   socials,
   resumeUrl,
+  avatarUrl,
 }: {
   name: string;
   headline: string;
@@ -22,6 +24,7 @@ export function Hero({
   available: boolean;
   socials: Social[];
   resumeUrl: string;
+  avatarUrl: string;
 }) {
   return (
     <section
@@ -49,13 +52,39 @@ export function Hero({
         )}
       </motion.div>
 
-      <div>
-        <h1 className="serif font-medium tracking-[-0.02em] leading-[0.95] text-[clamp(2.75rem,9vw,7rem)]">
-          {name}
-        </h1>
-        <p className="mt-5 max-w-xl text-[clamp(1.05rem,2.5vw,1.4rem)] leading-snug text-[var(--color-text)]">
-          {headline}
-        </p>
+      <div className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+        <div className="order-2 lg:order-1 flex-1">
+          <h1 className="serif font-medium tracking-[-0.02em] leading-[0.95] text-[clamp(2.75rem,9vw,7rem)]">
+            {name}
+          </h1>
+          <p className="mt-5 max-w-xl text-[clamp(1.05rem,2.5vw,1.4rem)] leading-snug text-[var(--color-text)]">
+            {headline}
+          </p>
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.15, ease }}
+          className="order-1 lg:order-2 self-end lg:self-auto shrink-0 relative w-20 h-20 sm:w-24 sm:h-24 lg:w-64 lg:h-64 rounded-full overflow-hidden border border-[var(--color-border)]"
+        >
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              alt={name}
+              fill
+              sizes="(max-width: 1024px) 96px, 256px"
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <div className="absolute inset-0 grid place-items-center bg-[var(--color-bg-soft)]">
+              <span className="serif text-3xl lg:text-7xl text-[var(--color-faint)]">
+                {name.charAt(0)}
+              </span>
+            </div>
+          )}
+        </motion.div>
       </div>
 
       <motion.div
