@@ -66,7 +66,7 @@ export function Hero({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.15, ease }}
-          className="shrink-0 relative w-32 h-32 sm:w-44 sm:h-44 lg:w-64 lg:h-64 rounded-full overflow-hidden border border-[var(--color-border)]"
+          className="shrink-0 relative mt-8 sm:mt-12 w-[clamp(9.5rem,33vw,18rem)] h-[clamp(9.5rem,33vw,18rem)] rounded-full overflow-hidden border border-[var(--color-border)]"
         >
           {avatarUrl ? (
             <Image
