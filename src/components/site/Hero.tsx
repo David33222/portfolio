@@ -52,8 +52,8 @@ export function Hero({
         )}
       </motion.div>
 
-      <div className="flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
-        <div className="order-2 lg:order-1 flex-1">
+      <div className="flex flex-row items-center gap-5 sm:gap-8 lg:gap-12">
+        <div className="flex-1 min-w-0">
           <h1 className="serif font-medium tracking-[-0.02em] leading-[0.95] text-[clamp(2.75rem,9vw,7rem)]">
             {name}
           </h1>
@@ -66,7 +66,7 @@ export function Hero({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.15, ease }}
-          className="order-1 lg:order-2 self-end lg:self-auto shrink-0 relative w-20 h-20 sm:w-24 sm:h-24 lg:w-64 lg:h-64 rounded-full overflow-hidden border border-[var(--color-border)]"
+          className="shrink-0 relative w-24 h-24 sm:w-32 sm:h-32 lg:w-64 lg:h-64 rounded-full overflow-hidden border border-[var(--color-border)]"
         >
           {avatarUrl ? (
             <Image
