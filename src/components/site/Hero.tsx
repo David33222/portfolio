@@ -66,7 +66,7 @@ export function Hero({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.15, ease }}
-          className="shrink-0 relative w-24 h-24 sm:w-32 sm:h-32 lg:w-64 lg:h-64 rounded-full overflow-hidden border border-[var(--color-border)]"
+          className="shrink-0 relative w-32 h-32 sm:w-44 sm:h-44 lg:w-64 lg:h-64 rounded-full overflow-hidden border border-[var(--color-border)]"
         >
           {avatarUrl ? (
             <Image
@@ -79,7 +79,7 @@ export function Hero({
             />
           ) : (
             <div className="absolute inset-0 grid place-items-center bg-[var(--color-bg-soft)]">
-              <span className="serif text-3xl lg:text-7xl text-[var(--color-faint)]">
+              <span className="serif text-4xl sm:text-5xl lg:text-7xl text-[var(--color-faint)]">
                 {name.charAt(0)}
               </span>
             </div>
