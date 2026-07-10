@@ -8,6 +8,13 @@ import {
   siVercel,
   siN8n,
   siGithub,
+  siFigma,
+  siPython,
+  siPostgresql,
+  siGo,
+  siExpress,
+  siFramer,
+  siVuedotjs,
   type SimpleIcon,
 } from "simple-icons";
 import { ShieldCheck, Bot, Layers, Sparkle, type LucideIcon } from "lucide-react";
@@ -17,12 +24,19 @@ const BRANDS: { match: string[]; icon: SimpleIcon }[] = [
   { match: ["typescript"], icon: siTypescript },
   { match: ["next"], icon: siNextdotjs },
   { match: ["react"], icon: siReact },
+  { match: ["vue"], icon: siVuedotjs },
   { match: ["tailwind"], icon: siTailwindcss },
+  { match: ["framer"], icon: siFramer },
   { match: ["node"], icon: siNodedotjs },
+  { match: ["express"], icon: siExpress },
+  { match: ["python"], icon: siPython },
+  { match: ["postgre"], icon: siPostgresql },
+  { match: [" go "], icon: siGo },
   { match: ["supabase"], icon: siSupabase },
   { match: ["vercel"], icon: siVercel },
   { match: ["n8n"], icon: siN8n },
   { match: ["git"], icon: siGithub },
+  { match: ["figma"], icon: siFigma },
 ];
 
 // Skills/concepts with no official logo -> tasteful generic icon.

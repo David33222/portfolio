@@ -64,6 +64,7 @@ async function main() {
         { name: "AI Agents", category: "AI", level: 80, order: 9 },
         { name: "Google Antigravity", category: "AI", level: 78, order: 10 },
         { name: "Cybersecurity", category: "Security", level: 65, order: 11 },
+        { name: "Figma", category: "Design", level: 82, order: 12 },
       ],
     });
     console.log("✓ Sample skills added");
