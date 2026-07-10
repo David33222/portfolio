@@ -11,7 +11,6 @@ const ease = [0.16, 1, 0.3, 1] as const;
 export function Hero({
   name,
   headline,
-  bio,
   location,
   available,
   socials,
@@ -19,7 +18,6 @@ export function Hero({
 }: {
   name: string;
   headline: string;
-  bio: string;
   location: string;
   available: boolean;
   socials: Social[];
@@ -51,24 +49,13 @@ export function Hero({
         )}
       </motion.div>
 
-      <div className="grid lg:grid-cols-[1fr_auto] gap-y-10 gap-x-16 items-end">
-        <div>
-          <h1 className="serif font-medium tracking-[-0.02em] leading-[0.95] text-[clamp(2.75rem,9vw,7rem)]">
-            {name}
-          </h1>
-          <p className="mt-5 max-w-xl text-[clamp(1.05rem,2.5vw,1.4rem)] leading-snug text-[var(--color-text)]">
-            {headline}
-          </p>
-        </div>
-
-        {/* meta column */}
-        <div className="lg:text-right lg:max-w-[16rem]">
-          {bio && (
-            <p className="text-sm leading-relaxed text-[var(--color-muted)]">
-              {bio}
-            </p>
-          )}
-        </div>
+      <div>
+        <h1 className="serif font-medium tracking-[-0.02em] leading-[0.95] text-[clamp(2.75rem,9vw,7rem)]">
+          {name}
+        </h1>
+        <p className="mt-5 max-w-xl text-[clamp(1.05rem,2.5vw,1.4rem)] leading-snug text-[var(--color-text)]">
+          {headline}
+        </p>
       </div>
 
       <motion.div

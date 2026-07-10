@@ -46,7 +46,6 @@ export default async function Home() {
         <Hero
           name={profile.name}
           headline={profile.headline}
-          bio={profile.bio}
           location={profile.location}
           available={profile.available}
           resumeUrl={profile.resumeUrl}
